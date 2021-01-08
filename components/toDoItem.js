@@ -1,5 +1,5 @@
-const template=document.createElement('template');
-template.innerHTML = `
+import {html,render} from 'lit-html';
+const template= html `
     <style>
         :host {
         display: block;
@@ -31,7 +31,7 @@ class ToDoItem extends HTMLElement{
     constructor(){
         super();
         this._shadowRoot= this.attachShadow({mode: 'open'});
-        this._shadowRoot.appendChild(template.content.cloneNode(true));
+        render(template,this._shadowRoot);
         this.item = this._shadowRoot.querySelector('.item');
         this.label = this._shadowRoot.querySelector('label');
         this.deleteButton = this._shadowRoot.querySelector('button');
