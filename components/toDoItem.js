@@ -28,7 +28,7 @@ class ToDoItem extends LitElement{
         bubbles:true,
         composed:true}
         ))
-        this.requestUpdate();
+       
     }
 
     constructor(){
@@ -60,8 +60,8 @@ class ToDoItem extends LitElement{
      </style>
      <li class="item">
          <input type="checkbox" @click=${()=>this.onChecked(this.todoItem.id)} 
-         ?checked=${this.todoItem.checked} > 
-         <label>${this.todoItem.item}</label>
+         .checked=${this.todoItem.checked} > 
+         <label class=${this.todoItem.checked?'completed':''}>${this.todoItem.item}</label>
          <button @click=${()=>this.onRemove(this.todoItem.id)}>❌</button>
      </li>`;
      }

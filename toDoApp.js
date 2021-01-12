@@ -23,8 +23,10 @@ class ToDoApp extends LitElement{
          let todosList =JSON.parse(this.todos).filter(function(item) {
             return item.id != e.detail.todoItemId;
         });
+        
          this.todos = JSON.stringify(todosList);
          localStorage.setItem('todos',this.todos);
+        
         })
 
         this.addEventListener('checkItem',(e)=>{
@@ -35,6 +37,7 @@ class ToDoApp extends LitElement{
             this.todos[index].checked = ! this.todos[index].checked ;
             this.todos = JSON.stringify(this.todos);
             localStorage.setItem('todos',this.todos);
+           
         })
     }
 
