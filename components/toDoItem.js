@@ -1,81 +1,71 @@
-const template=document.createElement('template');
-template.innerHTML = `
-    <style>
-        :host {
-        display: block;
-        cursor: pointer;
-        position: relative;
-        padding: 12px 8px 12px 40px;
-        background: #eee;
-        font-size: 1.6rem;
-        transition: 0.2s;
-        list-style:none;
-        }
-        .completed {
-        text-decoration: line-through;
-        }
-      
-        button {
-        border: none;
-        cursor: pointer;
-        }
-    </style>
-    <li class="item">
-        <input type="checkbox">
-        <label></label>
-        <button>❌</button>
-    </li>
-`;
+import {LitElement,html} from 'lit-element';
 
-class ToDoItem extends HTMLElement{
-    constructor(){
-        super();
-        this._shadowRoot= this.attachShadow({mode: 'open'});
-        this._shadowRoot.appendChild(template.content.cloneNode(true));
-        this.item = this._shadowRoot.querySelector('.item');
-        this.label = this._shadowRoot.querySelector('label');
-        this.deleteButton = this._shadowRoot.querySelector('button');
-        this.checkbox = this._shadowRoot.querySelector('input');
-        this.deleteButton.addEventListener('click', (e) => {
-            this.dispatchEvent(new CustomEvent('onRemove', { detail: this.index }));
-        });
-        this.checkbox.addEventListener('click',(e)=>{
-            this.dispatchEvent(new CustomEvent('onToggle',{detail:this.index}))
-        });
-    } 
 
-    connectedCallback(){    
-      this.renderToDoItem();
-     }
-
-     renderToDoItem(){
-       
-        if (this.hasAttribute('checked')){
-            this.label.classList.add('completed');
-            this.checkbox.setAttribute('checked', '');
-        } else {
-            this.item.classList.remove('completed');
-            this.checkbox.removeAttribute('checked');
+class ToDoItem extends LitElement{
+    
+    static get properties(){
+        return {
+           todoItem : {type:Object,attribute: false}
         }
-         this.label.innerHTML=this.text;
-         
-     }
-     
-     static get observedAttributes() {
-        return ['text','index'];
+    }
+    onRemove(id){
+        this.dispatchEvent(new CustomEvent('removeItem',
+        {
+        detail:{
+            todoItemId: id
+        }, 
+        bubbles:true,
+        composed:true}
+        ))
     }
 
-    attributeChangedCallback(name, oldValue, newValue) {
-        switch(name){
-            case 'text':
-                this.text = newValue;
-                break;
-            case 'index':
-                this.index = parseInt(newValue);
-                break;    
-        }
-    }  
-    
+    onChecked(id){
+        this.dispatchEvent(new CustomEvent('checkItem',
+        {
+        detail:{
+            todoItemId: id
+        }, 
+        bubbles:true,
+        composed:true}
+        ))
+       
+    }
+
+    constructor(){
+        super();
+        this.todoItem = {};
+       
+    } 
+     render(){
+         
+         return html`<style>
+         :host {
+         display: block;
+         cursor: pointer;
+         position: relative;
+         padding: 12px 8px 12px 40px;
+         background: #eee;
+         font-size: 1.6rem;
+         transition: 0.2s;
+         list-style:none;
+         }
+         .completed {
+         text-decoration: line-through;
+         }
+       
+         button {
+         border: none;
+         cursor: pointer;
+         }
+     </style>
+     <li class="item">
+         <input type="checkbox" @click=${()=>this.onChecked(this.todoItem.id)} 
+         .checked=${this.todoItem.checked} > 
+         <label class=${this.todoItem.checked?'completed':''}>${this.todoItem.item}</label>
+         <button @click=${()=>this.onRemove(this.todoItem.id)}>❌</button>
+     </li>`;
+     }
+   
 }
 
 
